@@ -6,6 +6,7 @@ import  {randomBytes, createHmac, sign} from 'crypto'
 async function login(req, res) {
     const { name, email, password } = req.body
 
+    //cheacking if the user exists in the db
     const [existingUser] = await db
         .select({
             id: usersTable.id,
@@ -16,21 +17,26 @@ async function login(req, res) {
         .from(usersTable)
         .where(table => eq(table.email, email))
     
+    // if user dosent exists
     if(!existingUser) {
         return res.status(404).json({error: `user with email ${email} does not exists!`})
     }
 
+    // if the user exists
+    // get the salt from the existing user data
     const salt = existingUser.salt
+    // het the hash from the existing user data
     const existingHash = existingUser.password
 
+    // creating a new hash, with tha same salt and password given my user
     const newHash = createHmac('sha256', salt).update(password).digest('hex')
 
+    // checking if the hash from the existing user is not equal to the new hash
     if (newHash != existingHash) {
         return res.status(400).json({'error': `Incorrect password`})
     }
 
-    // Generate a session for user
-
+    // Generate a session for user if the hash from the existing user is equal to the new hash
     const [session] = await db.insert(userSessions).values({
         userId: existingUser.id
     }).returning({id: userSessions.id})

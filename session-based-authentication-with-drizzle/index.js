@@ -12,6 +12,7 @@ const PORT = process.env.PORT ?? 8000
 app.use(express.json())
 
 app.use(async (req, res, next) => {
+    // session id in headers
     const sessionId = req.headers['session-id']
 
     // if sessionId is missing
@@ -36,6 +37,7 @@ app.use(async (req, res, next) => {
         return next()
     }
 
+    // add a property 'user' in request
     req.user = data
     next()
 })

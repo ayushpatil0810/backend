@@ -19,6 +19,9 @@ async function signup(req, res) {
             .json({error: `user with ${email} already exists!`})
     }
 
+
+    //if users with the email dosent exists, creata a account
+    
     const salt = randomBytes(256).toString('hex')
     const hashedPassword = createHmac('sha256', salt).update(password).digest('hex')
 
