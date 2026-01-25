@@ -7,7 +7,7 @@ import jwt from "jsonwebtoken";
 async function login(req, res) {
   const { name, email, password } = req.body;
 
-  //cheacking if the user exists in the db
+  //checking if the user exists in the db
   const [existingUser] = await db
     .select({
       id: usersTable.id,

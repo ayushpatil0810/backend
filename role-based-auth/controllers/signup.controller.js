@@ -1,7 +1,7 @@
 import { eq } from 'drizzle-orm'
 import db from '../db/index.js'
-import {usersTable} from '../db/schema.js'
-import  {randomBytes, createHmac, sign} from 'crypto'
+import { usersTable } from '../db/schema.js'
+import { randomBytes, createHmac } from 'crypto'
 
 async function signup(req, res) {
     const { name, email, password } = req.body
@@ -16,12 +16,12 @@ async function signup(req, res) {
     if (existingUser) {
         return res
             .status(400)
-            .json({error: `user with ${email} already exists!`})
+            .json({ error: `user with ${email} already exists!` })
     }
 
 
-    //if users with the email dosent exists, creata a account
-    
+    //if users with the email dosent exists, create a account
+
     const salt = randomBytes(256).toString('hex')
     const hashedPassword = createHmac('sha256', salt).update(password).digest('hex')
 
@@ -32,8 +32,8 @@ async function signup(req, res) {
         salt,
 
     })
-    .returning({id: usersTable.id})
-    return res.status(201).json({status: 'success', data: {userId: user.id}})
+        .returning({ id: usersTable.id })
+    return res.status(201).json({ status: 'success', data: { userId: user.id } })
 }
 
 export default signup
